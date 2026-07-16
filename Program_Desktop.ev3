@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SourceFile xmlns="http://www.ni.com/VirtualInstrument.xsd" xmlns:p="http://www.ni.com/ProgramInterface.xsd" Version="19.0">
+  <CompileInfo CompileType="Dynamic" />
+  <p:Window IsInteractive="true">
+    <p:PanelPopup />
+  </p:Window>
+  <VirtualInstrument>
+    <FrontPanel>
+      <FrontPanelUnknownType />
+    </FrontPanel>
+    <BlockDiagram Name="__ROOT__">
+      <Wire Id="w20" Joints="N(n2:SequenceOut) N(n22:SequenceIn)" />
+      <Wire Id="w6" Joints="N(n22:SequenceOut) N(n10:SequenceIn)" />
+      <Wire Id="w26" Joints="N(n10:SequenceOut) N(n25:SequenceIn)" />
+      <Wire Id="w28" Joints="N(n25:SequenceOut) N(n8:SequenceIn)" />
+      <Wire Id="w24" Joints="N(n8:SequenceOut) N(n30:SequenceIn)" />
+      <Wire Id="w21" Joints="N(n30:SequenceOut) N(n12:SequenceIn)" />
+      <Wire Id="w22" Joints="N(n12:SequenceOut) N(n20:SequenceIn)" />
+      
+      <StartBlock Id="n2" Bounds="100 100 70 91" />
+      
+      <!-- STARTUP: Motor A reverse -100 -->
+      <ConfigurableMethodCall Id="n22" Bounds="200 100 101 91" Target="RawMotorOn.vix">
+        <ConfigurableMethodTerminal ConfiguredValue="1.A">
+          <Terminal Id="MotorPort" Direction="Input" />
+        </ConfigurableMethodTerminal>
+        <ConfigurableMethodTerminal ConfiguredValue="-100">
+          <Terminal Id="Power" Direction="Input" />
+        </ConfigurableMethodTerminal>
+        <Terminal Id="SequenceIn" Direction="Input" Wire="w20" />
+        <Terminal Id="SequenceOut" Direction="Output" Wire="w6" />
+      </ConfigurableMethodCall>
+      
+      <!-- Motor B reverse -100 -->
+      <ConfigurableMethodCall Id="n10" Bounds="320 100 101 91" Target="RawMotorOn.vix">
+        <ConfigurableMethodTerminal ConfiguredValue="1.B">
+          <Terminal Id="MotorPort" Direction="Input" />
+        </ConfigurableMethodTerminal>
+        <ConfigurableMethodTerminal ConfiguredValue="-100">
+          <Terminal Id="Power" Direction="Input" />
+        </ConfigurableMethodTerminal>
+        <Terminal Id="SequenceIn" Direction="Input" Wire="w6" />
+        <Terminal Id="SequenceOut" Direction="Output" Wire="w26" />
+      </ConfigurableMethodCall>
+      
+      <!-- Motor C reverse -100 -->
+      <ConfigurableMethodCall Id="n25" Bounds="440 100 101 91" Target="RawMotorOn.vix">
+        <ConfigurableMethodTerminal ConfiguredValue="1.C">
+          <Terminal Id="MotorPort" Direction="Input" />
+        </ConfigurableMethodTerminal>
+        <ConfigurableMethodTerminal ConfiguredValue="-100">
+          <Terminal Id="Power" Direction="Input" />
+        </ConfigurableMethodTerminal>
+        <Terminal Id="SequenceIn" Direction="Input" Wire="w26" />
+        <Terminal Id="SequenceOut" Direction="Output" Wire="w28" />
+      </ConfigurableMethodCall>
+      
+      <!-- Motor D reverse -100 -->
+      <ConfigurableMethodCall Id="n8" Bounds="560 100 101 91" Target="RawMotorOn.vix">
+        <ConfigurableMethodTerminal ConfiguredValue="1.D">
+          <Terminal Id="MotorPort" Direction="Input" />
+        </ConfigurableMethodTerminal>
+        <ConfigurableMethodTerminal ConfiguredValue="-100">
+          <Terminal Id="Power" Direction="Input" />
+        </ConfigurableMethodTerminal>
+        <Terminal Id="SequenceIn" Direction="Input" Wire="w28" />
+        <Terminal Id="SequenceOut" Direction="Output" Wire="w24" />
+      </ConfigurableMethodCall>
+      
+      <!-- Wait 0.4 seconds -->
+      <ConfigurableWaitFor Id="n30" Bounds="680 100 101 91" Target="TimeCompare.vix">
+        <ConfigurableMethodTerminal ConfiguredValue="0.4">
+          <Terminal Id="How Long" Direction="Input" />
+        </ConfigurableMethodTerminal>
+        <Terminal Id="SequenceIn" Direction="Input" Wire="w24" />
+        <Terminal Id="SequenceOut" Direction="Output" Wire="w21" />
+      </ConfigurableWaitFor>
+      
+      <!-- SURVIVAL MODE LOOP - Interrupt 555 -->
+      <ConfigurableWhileLoop Id="n12" Bounds="800 100 300 200" InterruptName="555">
+        <Terminal Id="SequenceIn" Direction="Input" Wire="w21" />
+        <Terminal Id="SequenceOut" Direction="Output" Wire="w22" />
+      </ConfigurableWhileLoop>
+      
+      <!-- ATTACK MODE LOOP -->
+      <ConfigurableWhileLoop Id="n20" Bounds="1200 100 300 200" InterruptName="01">
+        <Terminal Id="SequenceIn" Direction="Input" Wire="w22" />
+        <Terminal Id="SequenceOut" Direction="Output" />
+      </ConfigurableWhileLoop>
+    </BlockDiagram>
+  </VirtualInstrument>
+</SourceFile>
